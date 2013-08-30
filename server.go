@@ -87,7 +87,7 @@ type ActionService struct {
     ctx *Thunder
     gorest.RestService `root:"/actions/"`
     actionAllowCross    gorest.EndPoint `method:"OPTIONS" path:"/{action:string}"`
-    putAction           gorest.EndPoint `method:"POST"    path:"/{action:string}" postdata:"string"`
+    postAction           gorest.EndPoint `method:"POST"    path:"/{action:string}" postdata:"string"`
     putAction           gorest.EndPoint `method:"PUT"     path:"/{action:string}" postdata:"string"`
     deleteAction        gorest.EndPoint `method:"DELETE"  path:"/{action:string}"`
 }
@@ -99,6 +99,10 @@ func NewActionService(ctx *Thunder) *ActionService{
 func(serv ActionService) ActionAllowCross(action string) {
   allowCross(serv.ResponseBuilder())
 }
+func(serv ActionService) PostAction(data string, actionStr string) {
+  serv.PutAction(data, actionStr)
+}
+
 func(serv ActionService) PutAction(data string, actionStr string) {
   var action Action
   switch(actionStr){
