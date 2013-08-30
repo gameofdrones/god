@@ -39,19 +39,19 @@ PUT /actions/stop
 ```
 
 ```
-POST /actions/up
+PUT|DELETE /actions/up
 ```
 
 ```
-POST /actions/down
+PUT|DELETE /actions/down
 ```
 
 ```
-POST /actions/left
+PUT|DELETE /actions/left
 ```
 
 ```
-POST /actions/right
+PUT|DELETE /actions/right
 ```
 
 ```
