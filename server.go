@@ -11,6 +11,20 @@ type Coord struct{
   Y int64
 }
 
+type Action byte
+
+const (
+  DIR_UP Action = 0x00
+  DIR_DOWN Action = 0x01
+  DIR_LEFT Action = 0x02
+  DIR_RIGHT Action = 0x03
+
+  FIRE Action = 0x04 // TODO
+
+  WAIT Action = 0xFE
+  STOP Action = 0xFF
+)
+
 func NewCoord(x int64, y int64) *Coord{
   c := new(Coord)
   c.X = x
@@ -30,10 +44,11 @@ func Register(){
   http.ListenAndServe(":9000",nil)
 }
 
-func allowCross(rb *gorest.ResponseBuilder) {
+func allowCross(rb *gorest.ResponseBuilder) *gorest.ResponseBuilder {
   rb.AddHeader("Access-Control-Allow-Origin", "*")
   rb.AddHeader("Access-Control-Allow-Method", "GET, PUT, POST, DELETE")
   rb.AddHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type")
+  return rb
 }
 
 //Position Definition
@@ -66,34 +81,40 @@ func(serv RocketService) Rocket(data Coord) {
 // Actions Definition
 type ActionService struct {
     gorest.RestService `root:"/actions/"`
-    stop  gorest.EndPoint `method:"PUT"  path:"/stop" postdata:"string"`
-    up    gorest.EndPoint `method:"POST" path:"/up" postdata:"string"`
-    down  gorest.EndPoint `method:"POST" path:"/down" postdata:"string"`
-    left  gorest.EndPoint `method:"POST" path:"/left" postdata:"string"`
-    right gorest.EndPoint `method:"POST" path:"/right" postdata:"string"`
-    fire  gorest.EndPoint `method:"PUT"  path:"/fire" postdata:"string"`
+    putAction     gorest.EndPoint `method:"PUT"     path:"/{action:string}" postdata:"string"`
+    deleteAction  gorest.EndPoint `method:"DELETE"  path:"/{action:string}"`
 }
-func(serv ActionService) Stop(data string) {
-  log.Printf("STOP")
+
+func(serv ActionService) PutAction(data string, actionStr string) {
+  var action Action
+  switch(actionStr){
+    case "stop": action = STOP
+    case "up": action = DIR_UP
+    case "down": action = DIR_DOWN
+    case "left": action = DIR_LEFT
+    case "right": action = DIR_RIGHT
+    case "fire": action = FIRE
+    default: {
+      allowCross(serv.ResponseBuilder()).SetResponseCode(404).Overide(true)
+      return
+    }
+  }
+  log.Printf("PUT %+v", action)
   allowCross(serv.ResponseBuilder())
 }
-func(serv ActionService) Up(data string) {
-  log.Printf("UP")
-  allowCross(serv.ResponseBuilder())
-}
-func(serv ActionService) Down(data string) {
-  log.Printf("DOWN")
-  allowCross(serv.ResponseBuilder())
-}
-func(serv ActionService) Left(data string) {
-  log.Printf("LEFT")
-  allowCross(serv.ResponseBuilder())
-}
-func(serv ActionService) Right(data string) {
-  log.Printf("RIGHT")
-  allowCross(serv.ResponseBuilder())
-}
-func(serv ActionService) Fire(data string) {
-  log.Printf("FIRE")
+
+func(serv ActionService) DeleteAction(actionStr string) {
+  var action Action
+  switch(actionStr){
+    case "up": action = DIR_UP
+    case "down": action = DIR_DOWN
+    case "left": action = DIR_LEFT
+    case "right": action = DIR_RIGHT
+    default: {
+      allowCross(serv.ResponseBuilder()).SetResponseCode(404).Overide(true)
+      return
+    }
+  }
+  log.Printf("DELETE %+v", action)
   allowCross(serv.ResponseBuilder())
 }
