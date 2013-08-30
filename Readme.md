@@ -4,6 +4,10 @@ Raspberry powered rocket launcher
 
 ## API
 
+### Position
+
+#### Get current position
+
 ```
 GET /position
 Accept: application/json
@@ -13,6 +17,16 @@ Accept: application/json
   "y": 3
 }
 ```
+
+#### Reset position
+
+```
+DELETE /position
+Accept: application/json
+
+```
+
+#### Set position
 
 ```
 PUT /position
@@ -24,6 +38,11 @@ Content-Type: application/json
 }
 ```
 
+### Rocket launcher
+
+
+#### Launch !
+
 ```
 PUT /rocket
 Content-Type: application/json
@@ -34,25 +53,64 @@ Content-Type: application/json
 }
 ```
 
+### Actions
+
+#### Stop current move
+
 ```
 PUT /actions/stop
 ```
 
-```
-PUT|DELETE /actions/up
-```
+#### Go up
 
 ```
-PUT|DELETE /actions/down
+POST /actions/up
 ```
 
-```
-PUT|DELETE /actions/left
-```
+#### Stop going up
 
 ```
-PUT|DELETE /actions/right
+DELETE /actions/up
 ```
+
+#### Go down
+
+```
+POST /actions/down
+```
+
+#### Stop going down
+
+```
+DELETE /actions/down
+```
+
+#### Go left
+
+```
+POST /actions/left
+```
+
+#### Stop going left
+
+```
+DELETE /actions/left
+```
+
+#### Go right
+
+```
+POST /actions/right
+```
+
+#### Stop going right
+
+```
+DELETE /actions/right
+```
+
+
+#### Fire !!!!
 
 ```
 PUT /actions/fire
