@@ -61,7 +61,7 @@ func(serv PositionService) Set(data Coord) {
   serv.ctx.SetPosition(data.X, data.Y, false)
   allowCross(serv.ResponseBuilder())
 }
-func(serv PositionService) Reset(data Coord) {
+func(serv PositionService) Reset() {
   log.Printf("RESET")
   log.Printf("%+v", data)
   serv.ctx.ResetPosition()
