@@ -28,7 +28,7 @@ func Register(ctx *Thunder){
 
 func allowCross(rb *gorest.ResponseBuilder) *gorest.ResponseBuilder {
   rb.AddHeader("Access-Control-Allow-Origin", "*")
-  rb.AddHeader("Access-Control-Allow-Method", "GET, PUT, POST, DELETE")
+  rb.AddHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
   rb.AddHeader("Access-Control-Allow-Headers", "accept, origin, x-requested-with, content-type")
   return rb
 }
