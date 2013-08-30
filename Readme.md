@@ -49,5 +49,11 @@ PUT /actions/fire
 ```
 
 
+## Dev setup
 
+```
+brew install go
+brew install libusb
+go get github.com/baloo/gousb/usb
+```
 
