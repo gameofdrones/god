@@ -60,6 +60,7 @@ func(serv PositionService) Set(data Coord) {
 type RocketService struct {
   ctx *Thunder
   gorest.RestService `root:"/rocket/" consumes:"application/json"`
+  rocketAllowCross    gorest.EndPoint `method:"OPTIONS" path:"/"`
   rocket    gorest.EndPoint `method:"PUT" path:"/" postdata:"Coord"`
 }
 func NewRocketService(ctx *Thunder) *RocketService{
@@ -101,6 +102,10 @@ func(serv ActionService) PutAction(data string, actionStr string) {
     }
   }
   log.Printf("PUT %+v", action)
+  allowCross(serv.ResponseBuilder())
+}
+
+func(serv RocketService) RocketAllowCross() {
   allowCross(serv.ResponseBuilder())
 }
 
