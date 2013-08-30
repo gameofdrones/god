@@ -87,6 +87,7 @@ type ActionService struct {
     ctx *Thunder
     gorest.RestService `root:"/actions/"`
     actionAllowCross    gorest.EndPoint `method:"OPTIONS" path:"/{action:string}"`
+    putAction           gorest.EndPoint `method:"POST"    path:"/{action:string}" postdata:"string"`
     putAction           gorest.EndPoint `method:"PUT"     path:"/{action:string}" postdata:"string"`
     deleteAction        gorest.EndPoint `method:"DELETE"  path:"/{action:string}"`
 }
@@ -106,13 +107,18 @@ func(serv ActionService) PutAction(data string, actionStr string) {
     case "down": action = DIR_DOWN
     case "left": action = DIR_LEFT
     case "right": action = DIR_RIGHT
-    case "fire": action = FIRE
+    case "fire": {
+      serv.ctx.Fire()
+      allowCross(serv.ResponseBuilder())
+      return
+    }
     default: {
       allowCross(serv.ResponseBuilder()).SetResponseCode(404).Overide(true)
       return
     }
   }
   log.Printf("PUT %+v", action)
+  serv.ctx.Put(action)
   allowCross(serv.ResponseBuilder())
 }
 
@@ -129,5 +135,6 @@ func(serv ActionService) DeleteAction(actionStr string) {
     }
   }
   log.Printf("DELETE %+v", action)
+  serv.ctx.Delete(action)
   allowCross(serv.ResponseBuilder())
 }
