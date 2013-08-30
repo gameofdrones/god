@@ -12,7 +12,7 @@ import (
 
 
 const (
-	X_TIME = 8000
+	X_TIME = 5360
 	X_POSITIONS = 100
 	Y_TIME = 1000
 	Y_POSITIONS = 10
