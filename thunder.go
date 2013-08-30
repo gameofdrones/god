@@ -297,6 +297,15 @@ func (thunder *Thunder) Put(action Action) error {
 	return nil
 }
 
+func (thunder *Thunder) Fire() error {
+	thunder.mutex.Lock()
+	defer thunder.mutex.Unlock()
+	thunder.RegisterFire()
+	thunder.RegisterWait(time.Duration(5000)*time.Millisecond)
+	thunder.RegisterReload()
+	return nil
+}
+
 func (thunder *Thunder) Delete(action Action) error {
 	thunder.mutex.Lock()
 	defer thunder.mutex.Unlock()
