@@ -15,6 +15,16 @@ Accept: application/json
 ```
 
 ```
+PUT /position
+Content-Type: application/json
+
+{
+  "x": 60,
+  "y": 3
+}
+```
+
+```
 PUT /rocket
 Content-Type: application/json
 
