@@ -269,10 +269,26 @@ func (c *Thunder) SetPosition(x int, y int, fire bool) {
 		c.RegisterFire()
 		c.RegisterWait(time.Duration(5000)*time.Millisecond)
 		c.RegisterReload()
-	}
+}
 
 	c.moves = c.moves + 1
 	c.mutex.Unlock()
 }
 
 
+func (thunder *Thunder) Put(action Action) error {
+	thunder.mutex.Lock()
+	defer thunder.mutex.Unlock()
+	thunder.RegisterMove(action)
+	thunder.dirty = true
+	return nil
+}
+
+func (thunder *Thunder) Delete(action Action) error {
+	thunder.mutex.Lock()
+	defer thunder.mutex.Unlock()
+	thunder.current_action = (thunder.current_action & (0xFF - (byte)(action)))
+	thunder.Control(thunder.current_action)
+	thunder.dirty = true
+	return nil
+}
