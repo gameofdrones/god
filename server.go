@@ -40,6 +40,7 @@ type PositionService struct {
   positionAllowCross    gorest.EndPoint `method:"OPTIONS" path:"/"`
   position              gorest.EndPoint `method:"GET" path:"/" output:"Coord"`
   set                   gorest.EndPoint `method:"PUT" path:"/" postdata:"Coord"`
+  reset                 gorest.EndPoint `method:"DELETE" path:"/"`
 }
 func NewPositionService(ctx *Thunder) *PositionService{
   s := new(PositionService)
@@ -53,10 +54,17 @@ func(serv PositionService) Position() Coord{
   allowCross(serv.ResponseBuilder())
   return Coord{123, 12}
 }
+
 func(serv PositionService) Set(data Coord) {
   log.Printf("SET")
   log.Printf("%+v", data)
   serv.ctx.SetPosition(data.X, data.Y, false)
+  allowCross(serv.ResponseBuilder())
+}
+func(serv PositionService) Reset(data Coord) {
+  log.Printf("RESET")
+  log.Printf("%+v", data)
+  serv.ctx.ResetPosition()
   allowCross(serv.ResponseBuilder())
 }
 

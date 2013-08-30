@@ -215,8 +215,21 @@ func (thunder *Thunder) Run() error {
 }
 
 
+func (c *Thunder) ResetPosition() {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
+	c.RegisterMove(DIR_DOWN)
+	c.RegisterMove(DIR_LEFT)
+	c.RegisterWait(time.Duration(8)*time.Second)
+	c.RegisterStop()
+	c.dirty = false
+	c.current_x = 0
+	c.current_y = 0
+}
 func (c *Thunder) SetPosition(x int, y int, fire bool) {
 	c.mutex.Lock()
+	defer c.mutex.Unlock()
 
 	// Check precision
 	if c.moves >= 5 {
@@ -270,10 +283,9 @@ func (c *Thunder) SetPosition(x int, y int, fire bool) {
 		c.RegisterFire()
 		c.RegisterWait(time.Duration(5000)*time.Millisecond)
 		c.RegisterReload()
-}
+	}
 
 	c.moves = c.moves + 1
-	c.mutex.Unlock()
 }
 
 
