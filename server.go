@@ -37,13 +37,17 @@ func allowCross(rb *gorest.ResponseBuilder) *gorest.ResponseBuilder {
 type PositionService struct {
   ctx *Thunder
   gorest.RestService `root:"/position/" consumes:"application/json" produces:"application/json"`
-  position  gorest.EndPoint `method:"GET" path:"/" output:"Coord"`
-  set       gorest.EndPoint `method:"PUT" path:"/" postdata:"Coord"`
+  positionAllowCross    gorest.EndPoint `method:"OPTIONS" path:"/"`
+  position              gorest.EndPoint `method:"GET" path:"/" output:"Coord"`
+  set                   gorest.EndPoint `method:"PUT" path:"/" postdata:"Coord"`
 }
 func NewPositionService(ctx *Thunder) *PositionService{
   s := new(PositionService)
   s.ctx = ctx
   return s
+}
+func(serv PositionService) PositionAllowCross() {
+  allowCross(serv.ResponseBuilder())
 }
 func(serv PositionService) Position() Coord{
   allowCross(serv.ResponseBuilder())
@@ -61,12 +65,15 @@ type RocketService struct {
   ctx *Thunder
   gorest.RestService `root:"/rocket/" consumes:"application/json"`
   rocketAllowCross    gorest.EndPoint `method:"OPTIONS" path:"/"`
-  rocket    gorest.EndPoint `method:"PUT" path:"/" postdata:"Coord"`
+  rocket              gorest.EndPoint `method:"PUT" path:"/" postdata:"Coord"`
 }
 func NewRocketService(ctx *Thunder) *RocketService{
   s := new(RocketService)
   s.ctx = ctx
   return s
+}
+func(serv RocketService) RocketAllowCross() {
+  allowCross(serv.ResponseBuilder())
 }
 func(serv RocketService) Rocket(data Coord) {
     log.Printf("ROCKET")
@@ -79,13 +86,17 @@ func(serv RocketService) Rocket(data Coord) {
 type ActionService struct {
     ctx *Thunder
     gorest.RestService `root:"/actions/"`
-    putAction     gorest.EndPoint `method:"PUT"     path:"/{action:string}" postdata:"string"`
-    deleteAction  gorest.EndPoint `method:"DELETE"  path:"/{action:string}"`
+    actionAllowCross    gorest.EndPoint `method:"OPTIONS" path:"/{action:string}"`
+    putAction           gorest.EndPoint `method:"PUT"     path:"/{action:string}" postdata:"string"`
+    deleteAction        gorest.EndPoint `method:"DELETE"  path:"/{action:string}"`
 }
 func NewActionService(ctx *Thunder) *ActionService{
   s := new(ActionService)
   s.ctx = ctx
   return s
+}
+func(serv ActionService) ActionAllowCross(action string) {
+  allowCross(serv.ResponseBuilder())
 }
 func(serv ActionService) PutAction(data string, actionStr string) {
   var action Action
@@ -102,10 +113,6 @@ func(serv ActionService) PutAction(data string, actionStr string) {
     }
   }
   log.Printf("PUT %+v", action)
-  allowCross(serv.ResponseBuilder())
-}
-
-func(serv RocketService) RocketAllowCross() {
   allowCross(serv.ResponseBuilder())
 }
 
