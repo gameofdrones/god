@@ -116,6 +116,10 @@ DELETE /actions/right
 PUT /actions/fire
 ```
 
+### Authentication
+
+None ;)
+
 
 ## Dev setup
 
