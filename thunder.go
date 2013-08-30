@@ -27,20 +27,18 @@ const (
 	MOTOR_STOP = 0x20
 )
 
-type direction byte
-
-
+type Action byte
 const (
-	DIR_UP = 0x00
-	DIR_DOWN = 0x01
-	DIR_LEFT = 0x02
-	DIR_RIGHT = 0x03
+	DIR_UP Action = 0x00
+	DIR_DOWN Action = 0x01
+	DIR_LEFT Action = 0x02
+	DIR_RIGHT Action = 0x03
 
-	FIRE = 0x04 // TODO
-	RELOAD = 0x05 // TODO
+	FIRE Action = 0x04 // TODO
+	RELOAD Action = 0x05 // TODO
 
-	WAIT = 0xFE
-	STOP = 0xFF
+	WAIT Action = 0xFE
+	STOP Action = 0xFF
 )
 
 
@@ -122,25 +120,6 @@ func FindDevice(ctx *usb.Context, device string) (*usb.Device, error) {
 	return dev, nil
 }
 
-
-
-func (c *Thunder) Move(dir direction) error {
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
-	switch {
-	case dir == DIR_UP:
-		return c.Control(0x02)
-	case dir == DIR_DOWN:
-		return c.Control(0x01)
-	case dir == DIR_LEFT:
-		return nil
-	case dir == DIR_RIGHT:
-		return nil
-	}
-
-	return fmt.Errorf("thunder: you may specify only one direction") //You're insecure, Don't know what for, [...]
-}
-
 func (c *Thunder) Stop() error {
 	return c.Control(0x20)
 }
@@ -164,7 +143,7 @@ func (c *Thunder) Control(msg byte) error {
 
 
 type Command struct {
-	ctype CommandType
+	action Action
 	duration time.Duration
 }
 
@@ -172,29 +151,29 @@ type CommandType byte
 
 
 
-func (thunder *Thunder) RegisterMove(dir direction) error {
-	log.Printf("register dir %s", dir)
-	thunder.channel <- Command { ctype: (CommandType)( dir), duration: time.Since(time.Now()), }
+func (thunder *Thunder) RegisterMove(action Action) error {
+	log.Printf("register action %s", action)
+	thunder.channel <- Command { action: action, duration: time.Since(time.Now()), }
 	return nil
 }
 
 func (thunder *Thunder) RegisterStop() error {
-	thunder.channel <- Command { ctype: STOP, duration: time.Since(time.Now()), }
+	thunder.channel <- Command { action: STOP, duration: time.Since(time.Now()), }
 	return nil
 }
 
 func (thunder *Thunder) RegisterFire() error {
-	thunder.channel <- Command { ctype: FIRE, duration: time.Since(time.Now()), }
+	thunder.channel <- Command { action: FIRE, duration: time.Since(time.Now()), }
 	return nil
 }
 
 func (thunder *Thunder) RegisterReload() error {
-	thunder.channel <- Command { ctype: RELOAD, duration: time.Since(time.Now()), }
+	thunder.channel <- Command { action: RELOAD, duration: time.Since(time.Now()), }
 	return nil
 }
 
 func (thunder *Thunder) RegisterWait(duration time.Duration) error {
-	thunder.channel <- Command { ctype: WAIT, duration: duration, }
+	thunder.channel <- Command { action: WAIT, duration: duration, }
 	return nil
 }
 
@@ -203,34 +182,34 @@ func (thunder *Thunder) Run() error {
 	log.Printf("Run()")
 	command := <- thunder.channel
 	log.Printf("got command %s", command)
-	switch {
-	case command.ctype == FIRE:
-		thunder.current_action = thunder.current_action | MOTOR_FIRE
-		thunder.Control(thunder.current_action)
-	case command.ctype == RELOAD:
-		thunder.current_action = thunder.current_action & (0xFF -  MOTOR_FIRE)
-		thunder.Control(thunder.current_action)
-	case command.ctype == STOP:
-		thunder.current_action = MOTOR_STOP
-		thunder.Control(thunder.current_action)
-		thunder.current_action = 0x00
-		thunder.Control(thunder.current_action)
-	case command.ctype == DIR_UP:
-		thunder.current_action = (thunder.current_action & (0xFF - MOTOR_DOWN)) | MOTOR_UP
-		thunder.Control(thunder.current_action)
-	case command.ctype == DIR_DOWN:
-		thunder.current_action = (thunder.current_action & (0xFF - MOTOR_UP)) | MOTOR_DOWN
-		thunder.Control(thunder.current_action)
-	case command.ctype == DIR_LEFT:
-		thunder.current_action = (thunder.current_action & (0xFF - MOTOR_RIGHT)) | MOTOR_LEFT
-		thunder.Control(thunder.current_action)
-	case command.ctype == DIR_RIGHT:
-		thunder.current_action = (thunder.current_action & (0xFF - MOTOR_LEFT)) | MOTOR_RIGHT
-		thunder.Control(thunder.current_action)
-	case command.ctype == WAIT:
-		log.Printf("wait for %s", command.duration)
-		time.Sleep(command.duration)
-		log.Printf("awake")
+	switch(command.action) {
+		case FIRE:
+			thunder.current_action = thunder.current_action | MOTOR_FIRE
+			thunder.Control(thunder.current_action)
+		case RELOAD:
+			thunder.current_action = thunder.current_action & (0xFF -  MOTOR_FIRE)
+			thunder.Control(thunder.current_action)
+		case STOP:
+			thunder.current_action = MOTOR_STOP
+			thunder.Control(thunder.current_action)
+			thunder.current_action = 0x00
+			thunder.Control(thunder.current_action)
+		case DIR_UP:
+			thunder.current_action = (thunder.current_action & (0xFF - MOTOR_DOWN)) | MOTOR_UP
+			thunder.Control(thunder.current_action)
+		case DIR_DOWN:
+			thunder.current_action = (thunder.current_action & (0xFF - MOTOR_UP)) | MOTOR_DOWN
+			thunder.Control(thunder.current_action)
+		case DIR_LEFT:
+			thunder.current_action = (thunder.current_action & (0xFF - MOTOR_RIGHT)) | MOTOR_LEFT
+			thunder.Control(thunder.current_action)
+		case DIR_RIGHT:
+			thunder.current_action = (thunder.current_action & (0xFF - MOTOR_LEFT)) | MOTOR_RIGHT
+			thunder.Control(thunder.current_action)
+		case WAIT:
+			log.Printf("wait for %s", command.duration)
+			time.Sleep(command.duration)
+			log.Printf("awake")
 	}
 	return thunder.Run()
 }

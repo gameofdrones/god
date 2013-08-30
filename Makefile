@@ -1,4 +1,4 @@
-god: god.go thunder.go
+god: god.go thunder.go server.go
 	go build  -o $@ $^
 
 test: god
