@@ -57,3 +57,9 @@ brew install libusb
 go get github.com/baloo/gousb/usb
 ```
 
+Mac OS:
+```
+vi /usr/local/include/libusb-1.0/libusb.h
+# Follow  https://gist.github.com/pjvds/4578277
+```
+
