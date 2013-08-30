@@ -1,4 +1,4 @@
-god: god.go context.go
+god: god.go thunder.go
 	go build  -o $@ $^
 
 test: god

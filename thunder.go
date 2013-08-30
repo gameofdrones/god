@@ -8,12 +8,13 @@ import (
 )
 
 
+type direction byte
 
 const (
-	DIR_UP,
-	DIR_DOWN,
-	DIR_LEFT,
-	DIR_RIGHT
+	DIR_UP = 0x00
+	DIR_DOWN = 0x01
+	DIR_LEFT = 0x02
+	DIR_RIGHT = 0x03
 )
 
 
@@ -89,26 +90,38 @@ func FindDevice(ctx *usb.Context, device string) (*usb.Device, error) {
 
 
 func (c *Thunder) Move(dir direction) error {
-	switch(dir) {
-	case DIR_UP:
-		
+	switch {
+	case dir == DIR_UP:
+		return nil
+	case dir == DIR_DOWN:
+		return nil
+	case dir == DIR_LEFT:
+		return nil
+	case dir == DIR_RIGHT:
+		return nil
 	}
+
+	return fmt.Errorf("thunder: you may specify only one direction") //You're insecure, Don't know what for, [...]
 }
 
 func (c *Thunder) Stop() error {
-	c.Control(0x20)
+	return c.Control(0x20)
 }
 
-func (c *Thunder) Control(msg byte) (error) {
+func (c *Thunder) Control(msg byte) error {
 	data := []byte{0x02,msg,0x00,0x00,0x00,0x00,0x00,0x00}
 
-	ep, err :=  dev.Control(
+	ep, err :=  c.subdevice.Control(
 		0x21,
 		0x09, //request
 		0x00, //wvalue
 		0x00, //windex
 		data)
 
+	_ = ep
+	_ = err
+
+	return nil // TODO
 }
 
 
