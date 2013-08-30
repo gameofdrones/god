@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 
+	"time"
 )
 
 
@@ -24,10 +25,25 @@ func main() {
 	// Ensure everything is closed on exit
 	defer ctx.Close()
 
-
+	go func() { 
+		ctx.RegisterMove(DIR_DOWN)
+		ctx.RegisterWait(time.Duration(1)*time.Second)
+		ctx.RegisterMove(DIR_UP)
+		ctx.RegisterWait(time.Duration(1)*time.Second)
+		ctx.RegisterMove(DIR_LEFT)
+		ctx.RegisterWait(time.Duration(1)*time.Second)
+		ctx.RegisterMove(DIR_RIGHT)
+		ctx.RegisterWait(time.Duration(1)*time.Second)
+		ctx.RegisterStop()
+	}()
+	go ctx.Run()
+//	ctx.Move(DIR_DOWN)
+//	ctx.Move(DIR_UP)
+	
 
 	_ = err
 
+	time.Sleep(9 * 1e9)
 }
 
 
