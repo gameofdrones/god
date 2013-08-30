@@ -221,6 +221,7 @@ func (c *Thunder) SetPosition(x int, y int, fire bool) {
 	// Check precision
 	if c.moves >= 5 {
 		c.dirty = true
+		c.moves = 0
 	}
 
 	// Check we did not move (c) John Drummond
