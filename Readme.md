@@ -25,27 +25,27 @@ Content-Type: application/json
 ```
 
 ```
-POST /action/stop
+PUT /actions/stop
 ```
 
 ```
-POST /action/up
+POST /actions/up
 ```
 
 ```
-POST /action/down
+POST /actions/down
 ```
 
 ```
-POST /action/left
+POST /actions/left
 ```
 
 ```
-POST /action/right
+POST /actions/right
 ```
 
 ```
-PUT /action/fire
+PUT /actions/fire
 ```
 
 
