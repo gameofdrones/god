@@ -49,5 +49,22 @@ PUT /actions/fire
 ```
 
 
+## Dev setup
 
+### Debian
+
+```
+apt-get install libusb-1.0-dev
+apt-get install golang
+go get github.com/baloo/gousb/usb
+```
+
+### MacOS
+```
+brew install go
+brew install libusb
+go get github.com/baloo/gousb/usb
+vi /usr/local/include/libusb-1.0/libusb.h
+# Follow  https://gist.github.com/pjvds/4578277
+```
 
