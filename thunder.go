@@ -187,7 +187,7 @@ func (thunder *Thunder) Run() error {
         case FIRE:
                 thunder.current_action = thunder.current_action | MOTOR_FIRE
                 thunder.Control(thunder.current_action)
-                GrabMjpegFrame()
+                grabMjpegFrame()
         case RELOAD:
                 thunder.current_action = thunder.current_action & (0xFF -  MOTOR_FIRE)
                 thunder.Control(thunder.current_action)
@@ -317,7 +317,7 @@ func (thunder *Thunder) Delete(action Action) error {
         return nil
 }
 
-func GrabMjpegFrame() {
+func grabMjpegFrame() {
         shotImg := "lastShot.jpg"
         hostWithPort := "10.0.25.113:8081"
         scriptName := "grab_mjpeg_frame.py"
@@ -333,6 +333,4 @@ func GrabMjpegFrame() {
         } else {
                 log.Printf("Image successfully created.")
         }
-
-        return nil
 }
