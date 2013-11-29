@@ -23,7 +23,7 @@ func Register(ctx *Thunder){
   gorest.RegisterService( NewRocketService(ctx) )
   gorest.RegisterService( NewActionService(ctx) )
   http.Handle("/",gorest.Handle())
-  http.ListenAndServe(":9000",nil)
+  http.ListenAndServe(":9000", http.FileServer(http.Dir(".")))
 }
 
 func allowCross(rb *gorest.ResponseBuilder) *gorest.ResponseBuilder {
