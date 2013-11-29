@@ -18,12 +18,17 @@ func NewCoord(x int, y int) *Coord{
   return c
 }
 
+func launchFileServer() {
+  http.ListenAndServe(":9001", http.FileServer(http.Dir(".")))
+}
+
 func Register(ctx *Thunder){
   gorest.RegisterService( NewPositionService(ctx) )
   gorest.RegisterService( NewRocketService(ctx) )
   gorest.RegisterService( NewActionService(ctx) )
   http.Handle("/",gorest.Handle())
-  http.ListenAndServe(":9000",nil)
+  go launchFileServer()
+  http.ListenAndServe(":9000", nil)
 }
 
 func allowCross(rb *gorest.ResponseBuilder) *gorest.ResponseBuilder {
