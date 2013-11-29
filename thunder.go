@@ -334,7 +334,5 @@ func GrabMjpegFrame() {
                 log.Printf("Image successfully created.")
         }
 
-        thunder.current_action = (thunder.current_action & (0xFF - (byte)(action)))
-        thunder.Control(thunder.current_action)
         return nil
 }
