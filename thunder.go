@@ -317,10 +317,7 @@ func (thunder *Thunder) Delete(action Action) error {
         return nil
 }
 
-func GrabMjpegFrame() error {
-        thunder.mutex.Lock()
-        defer thunder.mutex.Unlock()
-
+func GrabMjpegFrame() {
         shotImg := "lastShot.jpg"
         hostWithPort := "10.0.25.113:8081"
         scriptName := "grab_mjpeg_frame.py"
