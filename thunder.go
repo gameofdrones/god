@@ -151,6 +151,13 @@ type CommandType byte
 
 
 
+func (thunder *Thunder) CleanAll() error {
+	close(thunder.channel)
+	thunder.channel = make(chan Command)
+        thunder.RegisterStop()
+	return nil
+}
+
 func (thunder *Thunder) RegisterMove(action Action) error {
 	log.Printf("register action %s", action)
 	thunder.channel <- Command { action: action, duration: time.Since(time.Now()), }

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"sync"
 )
 
 
@@ -25,7 +26,14 @@ func main() {
 	go ctx.Run()
 	_ = err
 
+
+        go Motion(ctx)
 	Register(ctx)
+
+
+        wg := new(sync.WaitGroup)
+
+	wg.Wait()
 }
 
 
